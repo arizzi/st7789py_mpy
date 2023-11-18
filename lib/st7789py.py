@@ -119,10 +119,18 @@ _BIT0 = const(0x01)
 
 # Rotation tables (width, height, xstart, ystart)[rotation % 4]
 
+SUPPORTED_RESOLUTIONS = [(320,240),(240,240),(135,240),(128,128)]
+
 WIDTH_320 = [(240, 320,  0,  0),
              (320, 240,  0,  0),
              (240, 320,  0,  0),
              (320, 240,  0,  0)]
+
+WIDTH_128 = [(128, 128,  0,  0),
+             (128, 128,  0,  0),
+             (128, 128,  0,  0),
+             (128, 128,  0,  0)]
+
 
 WIDTH_240 = [(240, 240,  0,  0),
              (240, 240,  0,  0),
@@ -182,9 +190,9 @@ class ST7789():
         """
         Initialize display.
         """
-        if height != 240 or width not in [320, 240, 135]:
+        if (height,width) not in SUPPORTED_RESOLUTIONS:
             raise ValueError(
-                "Unsupported display. 320x240, 240x240 and 135x240 are supported."
+                "Unsupported display. Supported resolutions are %s"% SUPPORTED_RESOLUTIONS
             )
 
         if dc is None:
@@ -316,9 +324,11 @@ class ST7789():
             table = WIDTH_240
         elif self._display_width == 135:
             table = WIDTH_135
+        elif self._display_width == 128:
+            table = WIDTH_128
         else:
             raise ValueError(
-                "Unsupported display. 320x240, 240x240 and 135x240 are supported."
+                "Unsupported display. Supported resolutions are %s"% SUPPORTED_RESOLUTIONS
             )
 
         self.width, self.height, self.xstart, self.ystart = table[rotation]
